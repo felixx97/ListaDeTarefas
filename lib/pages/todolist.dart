@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/widgets/todoListIten.dart';
 
-class TodoListPage extends StatelessWidget {
+class TodoListPage extends StatefulWidget {
   TodoListPage({Key? key}) : super(key: key);
 
-  final TextEditingController emailController = TextEditingController();
+  @override
+  State<TodoListPage> createState() => _TodoListPageState();
+}
+
+class _TodoListPageState extends State<TodoListPage> {
+  final TextEditingController todoController = TextEditingController();
+
+  List<String> todos = [];
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +24,11 @@ class TodoListPage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     flex: 2,
                     //expandido ate o limite do outro widget
                     child: TextField(
+                      controller: todoController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Adicione uma Tafera',
@@ -27,11 +36,15 @@ class TodoListPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 8, //espaço vazio entre botão e a caixa de dialogo
-                  ),
+                  const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      String text = todoController.text;
+                      setState(() {
+                        todos.add(text);
+                      });
+                      todoController.clear();
+                    },
                     style: ElevatedButton.styleFrom(
                       //personalizar botão
                       primary: Colors.pink,
@@ -44,41 +57,20 @@ class TodoListPage extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(height: 20),
-              ListView(
-                shrinkWrap: true,
-                children: [
-                  ListTile(
-                    title: Text("Tarefa 1"),
-                    subtitle: Text("20/11/2021"),
-                    leading: const Icon(
-                      Icons.save,
-                      size: 25,
-                    ),
-                    onTap: () {
-                      print("tarefa1");
-                    },
-                  ),
-                  ListTile(
-                    title: Text("Tarefa 2"),
-                    subtitle: Text("25/11/2021"),
-                    leading: const Icon(
-                      Icons.save,
-                      size: 25,
-                    ),
-                    onTap: () {
-                      print("tarefa2");
-                    },
-                    onLongPress: () {
-                      print("pressionou");
-                    },
-                  ),
-                ],
+              SizedBox(height: 20),
+              Flexible(
+                //permitir que a lista não ultrapasse o tamanho maximo
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (String todo in todos) todoListItem(),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     //maior largura possivel
                     child: Text(
                       "Você possui 0 tarefas pendentes",
