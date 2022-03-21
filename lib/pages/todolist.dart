@@ -86,11 +86,9 @@ class _TodoListPageState extends State<TodoListPage> {
                         "Você possui ${todos.length} tarefas pendentes",
                       ),
                     ),
-                    const SizedBox(
-                      width: 8,
-                    ),
+                    const SizedBox(width: 8),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: showDeleteConfirmationDialog,
                       style: ElevatedButton.styleFrom(
                         //personalizar botão
                         primary: Colors.pink,
@@ -138,5 +136,38 @@ class _TodoListPageState extends State<TodoListPage> {
         duration: const Duration(seconds: 4),
       ),
     );
+  }
+
+  void showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Limpar tudo?"),
+        content: Text("certeza de apagar todas as tarefas"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(primary: Colors.pink),
+            child: Text("Cancelar"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              deletedAllTodos();
+            },
+            style: TextButton.styleFrom(primary: Colors.pink),
+            child: Text("Limpar tudo"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void deletedAllTodos() {
+    setState(() {
+      todos.clear();
+    });
   }
 }
